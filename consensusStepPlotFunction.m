@@ -6,8 +6,6 @@ function h = consensusStepPlotFunction(agentsList,hist,plot_handles,i,leaderD,d,
     
     subplot(3,1,[1,2]);
     
-    xlabel('x')
-    ylabel('y')
     if d==3
         zlabel('z')
     end
