@@ -1,21 +1,20 @@
-INFO:
+# Distributed formation-keeping of underactuated vehicles  
 
-This project is associated with the publication following publication:
+This git illustrate the use of a distributed formation-keeping control algorithm for vehicles described by a unicycle model. The controller is published in 
 
-A virtual vehicle approach to distributed control
-for formation keeping of underactuated vehicles"
+>Roth Y., Alessandretti A., Aguiar A. P., Jones C.	*A virtual vehicle approach to distributed control for formation keeping of underactuated vehicles.* Proc. of the 1th Indian Control Conf. (ICC 2015), Chennai, India 2015.
 
-by Yann Roth, Andrea Alessandretti*, A. Pedro Aguiar, Colin N Jones
+The control architecture presents a two layers structure: 
 
-submitted for the Indian Control Conference 2015 (ICC15)
+- A lower layer performs formation keeping (using consensus theory) among a set of virtual single integrators.
+- An upper layer uses a trajectory-tracking controller to track the virtual vehicle.
 
+For more details we refer to the publication above.
 
-GETTING STARTED:
+## Files
+The simulations are made using [VirtualArena v2.1.0](https://github.com/andreaalessandretti/VirtualArena/releases/tag/v2.1.0).
 
-1) Install VirtulArena (http://www.mathworks.com/matlabcentral/fileexchange/46968-virtualarena)
-2) Run the files 
+- The file `runmeSingleIntegrators.m` simulates formation-keeping among a set of single integrators. The controller in this simulation is taken from:
+>Wei Ren and RW Beard. *Distributed consensus in multi-vehicle Cooperative control.* Springer-VerlagLondon
 
-runme2D.m
-runme3D.m
-
-to replicate the simulations of the publication.
+- The file `runmeUnicycle.m` simulates formation-keeping among a set of unicycle models using the proposed virtual-vehicle approach.
