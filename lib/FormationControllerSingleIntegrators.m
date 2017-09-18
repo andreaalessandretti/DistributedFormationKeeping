@@ -1,38 +1,33 @@
 classdef FormationControllerSingleIntegrators < Controller
-%% FormationControllerSingleIntegrators(d,dt)aw,controllerVirtualVehicle)
-
-% Written by Andrea Alessandretti 02-05-16
-
+%% FormationControllerSingleIntegrators
+% Implements the control law
+%
+% u  = sum_{i=1}^n_neighbours  eta*(vi-gamma*(dx-d(:,i)));
+%
+% with 
+%
+% vi = readingsSensors{2}{i}(1:nu);   %readingsSensors{2} = velocity sensor
+% dx = x-readingsSensors{1}{i}(1:nu); %readingsSensors{1} = position sensor
+% eta = 1/n_neighbours 
+% gamma = 1.
+%
+% FormationControllerSingleIntegrators Methods:
+%    FormationControllerSingleIntegrators(d) - constructor
+%
     properties
-        lastNetworkReadings;
-        lastNetworkReadingsT;
         d;
-        dt;
     end
     
     methods
         
-        function obj = FormationControllerSingleIntegrators(d,dt)
+        function obj = FormationControllerSingleIntegrators(d)
             obj.d  = d;
-            obj.dt = dt;
         end
         
         function u = computeInput(obj,t,x,readingsSensors)
-            
-            readingsPos = {};
-            readingsVel = {};
-            nVehicles = length(readingsSensors)/2;
-            
-            for ii=1:nVehicles
-                readingsPos = {readingsPos{:},readingsSensors{ii}{:}};
-                readingsVel = {readingsVel{:},readingsSensors{ii+nVehicles}{:}};
-            end
-            
-            d            = obj.d;
-            nu           = length(d);
-            dt           = obj.dt;
-            n_detect     = length(readingsPos);
-            lastReadings = obj.lastNetworkReadings;
+           
+            nu           = length(obj.d);
+            n_detect     = length(readingsSensors{1});
             eta          = 1/n_detect;
             gamma        = 1;
             
@@ -40,9 +35,9 @@ classdef FormationControllerSingleIntegrators < Controller
             
             for i = 1:n_detect
                 
-                vi = readingsVel{i}(1:nu);
-                dx = x-readingsPos{i}(1:nu);
-                u  = u + 1/eta*(vi-gamma*(dx-d(:,i)));
+                vi = readingsSensors{2}{i}(1:nu);   %readingsSensors{2} = velocity sensor
+                dx = x-readingsSensors{1}{i}(1:nu); %readingsSensors{1} = position sensor
+                u  = u + 1/eta*(vi-gamma*(dx-obj.d(:,i)));
                 
             end
             

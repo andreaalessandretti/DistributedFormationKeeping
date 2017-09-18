@@ -12,7 +12,7 @@ The control architecture presents a two layers structure:
 For more details we refer to the publication above.
 
 ## Files
-The simulations are made using [VirtualArena v2.1.0](https://github.com/andreaalessandretti/VirtualArena/releases/tag/v2.1.0).
+The simulations are made using [VirtualArena v3.0.1](https://github.com/andreaalessandretti/VirtualArena/tree/v3.0.1).
 
 - The file `runmeSingleIntegrators.m` simulates formation-keeping among a set of single integrators. The controller in this simulation is taken from:
 >Wei Ren and RW Beard. *Distributed consensus in multi-vehicle Cooperative control.* Springer-VerlagLondon

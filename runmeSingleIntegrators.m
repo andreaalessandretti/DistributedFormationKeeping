@@ -1,11 +1,11 @@
 %% Formation control of single integrator systems
-% Written by Andrea Alessandretti 02-05-16
+
 clc; clear all; close all;
 
 addpath('./lib');
 
 N  = 4;     % number of agents (leader included)
-dt = 0.01;  % discretization step
+dt = 0.1;  % discretization step
 
 %% Formation - Desired displacement vectors 
 % formationD{i}(:,j) = position_agent_i - position_agent_j
@@ -16,7 +16,7 @@ formationD = build_dist(N, 2);
 % of its neighboring agents.
 
 % Sensors
-s1  = AgentSensor(@(agent)agent.x);             %Position (state x) sensor)
+s1  = IAgentSensor(@(t,agentId,agent,sensedAgentId,sensedAgent)sensedAgent.x); %Position (state x) sensor)
 s1v = VelocityAgentSensor(dt,@(agent)agent.x);  %Velocity sensor)
 
 % Note: VelocityAgentSensor approximates the velocity using two consecutive
@@ -32,26 +32,26 @@ A(2:N,1:N-1) = eye(N-1);
 
 % Initial Conditions
 x0systems = [0 -2 -5 -7;
-               0 -7  2 -5 ];
+             0 -7  2 -5 ];
 %Leader
-v{1} = CtSystem('StateEquation',@(t,x,u)u,'nx',2,'nu',2);
+v{1} = ICtSystem('StateEquation',@(t,x,u)u,'nx',2,'nu',2);
 
-v{1}.controller       = InlineController(@(t,x)[sin(0.1*t);cos(0.1*t)]);
+v{1}.controller       = IController(@(t,x)[sin(0.1*t);cos(0.1*t)]);
 v{1}.initialCondition = x0systems(:,1);
 
 %Followers
 for ii = 2:N
     
-    v{ii} = CtSystem('StateEquation',@(t,x,u)u,'nx',2,'nu',2,'InitialCondition',x0systems(:,ii));
+    v{ii} = ICtSystem('StateEquation',@(t,x,u)u,'nx',2,'nu',2,'InitialCondition',x0systems(:,ii));
     
-    v{ii}.controller = FormationControllerSingleIntegrators(formationD{ii}(:,logical(A(ii,:))), dt);
+    v{ii}.controller = FormationControllerSingleIntegrators(formationD{ii}(:,logical(A(ii,:))) );
     
 end
 
 va = VirtualArena(v,...
     'StoppingCriteria'  , @(t,as)t>30,...
     'StepPlotFunction'  , @(systemsList,log,oldHandles,k) stepPlotSingleIntegrators(systemsList,log,oldHandles,k,formationD), ...
-    'SensorsNetwork'    , {s1,A,s1v,A},...
+    'SensorsNetwork'    , {s1,@(t)A,s1v,@(t)A},...
     'DiscretizationStep', dt,...
     'PlottingStep'      , 1);
 
